@@ -64,6 +64,7 @@ namespace BuildingThemes.Detour
             ulong num = zoneBlock.m_valid & ~(zoneBlock.m_occupied1 | zoneBlock.m_occupied2);
             int spawnpointRow = 0;
             ItemClass.Zone zone = ItemClass.Zone.Unzoned;
+            
             int num3 = 0;
             while (num3 < 4 && zone == ItemClass.Zone.Unzoned)
             {
@@ -74,43 +75,45 @@ namespace BuildingThemes.Detour
                 }
                 num3++;
             }
+
             DistrictManager instance2 = Singleton<DistrictManager>.instance;
-
             Vector3 m_position = (Vector3)zoneBlock.m_position;
-
             byte district = instance2.GetDistrict(m_position);
-            int num4;
+
+            int actualWorkplaceDemand;
             switch (zone)
             {
                 case ItemClass.Zone.ResidentialLow:
-                    num4 = zoneManager.m_actualResidentialDemand;
-                    num4 += instance2.m_districts.m_buffer[(int)district].CalculateResidentialLowDemandOffset();
+                    actualWorkplaceDemand = zoneManager.m_actualResidentialDemand;
+                    actualWorkplaceDemand += instance2.m_districts.m_buffer[(int)district].CalculateResidentialLowDemandOffset();
                     break;
                 case ItemClass.Zone.ResidentialHigh:
-                    num4 = zoneManager.m_actualResidentialDemand;
-                    num4 += instance2.m_districts.m_buffer[(int)district].CalculateResidentialHighDemandOffset();
+                    actualWorkplaceDemand = zoneManager.m_actualResidentialDemand;
+                    actualWorkplaceDemand += instance2.m_districts.m_buffer[(int)district].CalculateResidentialHighDemandOffset();
                     break;
                 case ItemClass.Zone.CommercialLow:
-                    num4 = zoneManager.m_actualCommercialDemand;
-                    num4 += instance2.m_districts.m_buffer[(int)district].CalculateCommercialLowDemandOffset();
+                    actualWorkplaceDemand = zoneManager.m_actualCommercialDemand;
+                    actualWorkplaceDemand += instance2.m_districts.m_buffer[(int)district].CalculateCommercialLowDemandOffset();
                     break;
                 case ItemClass.Zone.CommercialHigh:
-                    num4 = zoneManager.m_actualCommercialDemand;
-                    num4 += instance2.m_districts.m_buffer[(int)district].CalculateCommercialHighDemandOffset();
+                    actualWorkplaceDemand = zoneManager.m_actualCommercialDemand;
+                    actualWorkplaceDemand += instance2.m_districts.m_buffer[(int)district].CalculateCommercialHighDemandOffset();
                     break;
                 case ItemClass.Zone.Industrial:
-                    num4 = zoneManager.m_actualWorkplaceDemand;
-                    num4 += instance2.m_districts.m_buffer[(int)district].CalculateIndustrialDemandOffset();
+                    actualWorkplaceDemand = zoneManager.m_actualWorkplaceDemand;
+                    actualWorkplaceDemand += instance2.m_districts.m_buffer[(int)district].CalculateIndustrialDemandOffset();
                     break;
                 case ItemClass.Zone.Office:
-                    num4 = zoneManager.m_actualWorkplaceDemand;
-                    num4 += instance2.m_districts.m_buffer[(int)district].CalculateOfficeDemandOffset();
+                    actualWorkplaceDemand = zoneManager.m_actualWorkplaceDemand;
+                    actualWorkplaceDemand += instance2.m_districts.m_buffer[(int)district].CalculateOfficeDemandOffset();
                     break;
                 default:
                     return;
             }
+
             Vector2 a = VectorUtils.XZ(m_position);
             Vector2 vector3 = a - 3.5f * xDirection + ((float)spawnpointRow - 3.5f) * zDirection;
+
             int[] tmpXBuffer = zoneManager.m_tmpXBuffer;
             for (int i = 0; i < 13; i++)
             {
@@ -125,32 +128,33 @@ namespace BuildingThemes.Detour
             Vector2 vector4 = quad.Min();
             Vector2 vector5 = quad.Max();
 
-            //begin mod
-            int num5 = Mathf.Max((int)((vector4.x - 46f) / 64f + _zoneGridHalfResolution), 0);
-            int num6 = Mathf.Max((int)((vector4.y - 46f) / 64f + _zoneGridHalfResolution), 0);
-            int num7 = Mathf.Min((int)((vector5.x + 46f) / 64f + _zoneGridHalfResolution), _zoneGridResolution - 1);
-            int num8 = Mathf.Min((int)((vector5.y + 46f) / 64f + _zoneGridHalfResolution), _zoneGridResolution - 1);
+            //begin mod 81 tiles compatibility fix
+            int Xnum3 = Mathf.Max((int)((vector4.x - 46f) / 64f + _zoneGridHalfResolution), 0);
+            int Xnum4 = Mathf.Max((int)((vector4.y - 46f) / 64f + _zoneGridHalfResolution), 0);
+            int Xnum5 = Mathf.Min((int)((vector5.x + 46f) / 64f + _zoneGridHalfResolution), _zoneGridResolution - 1);
+            int Xnum6 = Mathf.Min((int)((vector5.y + 46f) / 64f + _zoneGridHalfResolution), _zoneGridResolution - 1);
             //end mod
-            for (int j = num6; j <= num8; j++)
+
+            for (int j = Xnum4; j <= Xnum6; j++)
             {
-                for (int k = num5; k <= num7; k++)
+                for (int k = Xnum3; k <= Xnum5; k++)
                 {
-                    //begin mod
-                    ushort num9 = zoneManager.m_zoneGrid[j * _zoneGridResolution + k];
+                    //begin mod 81 tiles compatibity fix
+                    ushort Xnum7 = zoneManager.m_zoneGrid[j * _zoneGridResolution + k];
                     //end mod
-                    int num10 = 0;
-                    while (num9 != 0)
+                    int Xnum8 = 0;
+                    while (Xnum7 != 0)
                     {
-                        Vector3 positionVar = zoneManager.m_blocks.m_buffer[(int)num9].m_position;
-                        float num11 = Mathf.Max(Mathf.Max(vector4.x - 46f - positionVar.x, vector4.y - 46f - positionVar.z),
+                        Vector3 positionVar = zoneManager.m_blocks.m_buffer[(int)Xnum7].m_position;
+                        float Xnum9 = Mathf.Max(Mathf.Max(vector4.x - 46f - positionVar.x, vector4.y - 46f - positionVar.z),
                             Mathf.Max(positionVar.x - vector5.x - 46f, positionVar.z - vector5.y - 46f));
 
-                        if (num11 < 0f)
+                        if (Xnum9 < 0f)
                         {
-                            CheckBlock(ref zoneBlock, ref zoneManager.m_blocks.m_buffer[(int)num9], tmpXBuffer, zone, vector3, xDirection, zDirection, quad);
+                            CheckBlock(ref zoneBlock, ref zoneManager.m_blocks.m_buffer[(int)Xnum7], tmpXBuffer, zone, vector3, xDirection, zDirection, quad);
                         }
-                        num9 = zoneManager.m_blocks.m_buffer[(int)num9].m_nextGridBlock;
-                        if (++num10 >= 49152)
+                        Xnum7 = zoneManager.m_blocks.m_buffer[(int)Xnum7].m_nextGridBlock;
+                        if (++Xnum8 >= 49152)
                         {
                             CODebugBase<LogChannel>.Error(LogChannel.Core, "Invalid list detected!\n" + Environment.StackTrace);
                             break;
@@ -161,47 +165,48 @@ namespace BuildingThemes.Detour
 
             for (int l = 0; l < 13; l++)
             {
-                uint num12 = (uint)tmpXBuffer[l];
-                int num13 = 0;
-                bool flag = (num12 & 196608u) == 196608u;
+                uint Xnum10 = (uint)tmpXBuffer[l];
+                int Xnum11 = 0;
+                bool flag = (Xnum10 & 196608u) == 196608u;
                 bool flag2 = false;
-                while ((num12 & 1u) != 0u)
+                while ((Xnum10 & 1u) != 0u)
                 {
-                    num13++;
-                    flag2 = ((num12 & 65536u) != 0u);
-                    num12 >>= 1;
+                    Xnum11++;
+                    flag2 = ((Xnum10 & 65536u) != 0u);
+                    Xnum10 >>= 1;
                 }
-                if (num13 == 5 || num13 == 6)
+                if (Xnum11 == 5 || Xnum11 == 6)
                 {
                     if (flag2)
                     {
-                        num13 -= Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) + 2;
+                        Xnum11 -= Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) + 2;
                     }
                     else
                     {
-                        num13 = 4;
+                        Xnum11 = 4;
                     }
-                    num13 |= 131072;
+                    Xnum11 |= 131072;
                 }
-                else if (num13 == 7)
+                else if (Xnum11 == 7)
                 {
-                    num13 = 4;
-                    num13 |= 131072;
+                    Xnum11 = 4;
+                    Xnum11 |= 131072;
                 }
                 if (flag)
                 {
-                    num13 |= 65536;
+                    Xnum11 |= 65536;
                 }
-                tmpXBuffer[l] = num13;
+                tmpXBuffer[l] = Xnum11;
             }
-            int num14 = tmpXBuffer[6] & 65535;
-            if (num14 == 0)
+            int Xnum12 = tmpXBuffer[6] & 65535;
+            if (Xnum12 == 0)
             {
                 return;
             }
 
             bool flag3 = IsGoodPlace(ref zoneBlock, vector3);
-            if (Singleton<SimulationManager>.instance.m_randomizer.Int32(100u) >= num4)
+            
+            if (Singleton<SimulationManager>.instance.m_randomizer.Int32(100u) >= actualWorkplaceDemand)
             {
                 if (flag3)
                 {
@@ -209,6 +214,7 @@ namespace BuildingThemes.Detour
                 }
                 return;
             }
+           
             if (!flag3 && zoneManager.m_goodAreaFound[(int)zone] > -1024)
             {
                 if (zoneManager.m_goodAreaFound[(int)zone] == 0)
@@ -217,76 +223,78 @@ namespace BuildingThemes.Detour
                 }
                 return;
             }
-            int num15 = 6;
-            int num16 = 6;
+
+            int Xnum13 = 6;
+            int Xn = 6;
             bool flag4 = true;
+            
             while (true)
             {
                 if (flag4)
                 {
-                    while (num15 != 0)
+                    while (Xnum13 != 0)
                     {
-                        if ((tmpXBuffer[num15 - 1] & 65535) != num14)
+                        if ((tmpXBuffer[Xnum13 - 1] & 65535) != Xnum12)
                         {
                             break;
                         }
-                        num15--;
+                        Xnum13--;
                     }
-                    while (num16 != 12)
+                    while (Xn != 12)
                     {
-                        if ((tmpXBuffer[num16 + 1] & 65535) != num14)
+                        if ((tmpXBuffer[Xn + 1] & 65535) != Xnum12)
                         {
                             break;
                         }
-                        num16++;
+                        Xn++;
                     }
                 }
                 else
                 {
-                    while (num15 != 0)
+                    while (Xnum13 != 0)
                     {
-                        if ((tmpXBuffer[num15 - 1] & 65535) < num14)
+                        if ((tmpXBuffer[Xnum13 - 1] & 65535) < Xnum12)
                         {
                             break;
                         }
-                        num15--;
+                        Xnum13--;
                     }
-                    while (num16 != 12)
+                    while (Xn != 12)
                     {
-                        if ((tmpXBuffer[num16 + 1] & 65535) < num14)
+                        if ((tmpXBuffer[Xn + 1] & 65535) < Xnum12)
                         {
                             break;
                         }
-                        num16++;
+                        Xn++;
                     }
                 }
-                int num17 = num15;
-                int num18 = num16;
-                while (num17 != 0)
+                int Xnum14 = Xnum13;
+                int Xnum15 = Xn;
+                while (Xnum14 != 0)
                 {
-                    if ((tmpXBuffer[num17 - 1] & 65535) < 2)
+                    if ((tmpXBuffer[Xnum14 - 1] & 65535) < 2)
                     {
                         break;
                     }
-                    num17--;
+                    Xnum14--;
                 }
-                while (num18 != 12)
+                while (Xnum15 != 12)
                 {
-                    if ((tmpXBuffer[num18 + 1] & 65535) < 2)
+                    if ((tmpXBuffer[Xnum15 + 1] & 65535) < 2)
                     {
                         break;
                     }
-                    num18++;
+                    Xnum15++;
                 }
-                bool flag5 = num17 != 0 && num17 == num15 - 1;
-                bool flag6 = num18 != 12 && num18 == num16 + 1;
+                bool flag5 = Xnum14 != 0 && Xnum14 == Xnum13 - 1;
+                bool flag6 = Xnum15 != 12 && Xnum15 == Xn + 1;
                 if (flag5 && flag6)
                 {
-                    if (num16 - num15 > 2)
+                    if (Xn - Xnum13 > 2)
                     {
                         break;
                     }
-                    if (num14 <= 2)
+                    if (Xnum12 <= 2)
                     {
                         if (!flag4)
                         {
@@ -295,16 +303,16 @@ namespace BuildingThemes.Detour
                     }
                     else
                     {
-                        num14--;
+                        Xnum12--;
                     }
                 }
                 else if (flag5)
                 {
-                    if (num16 - num15 > 1)
+                    if (Xn - Xnum13 > 1)
                     {
                         goto Block_36;
                     }
-                    if (num14 <= 2)
+                    if (Xnum12 <= 2)
                     {
                         if (!flag4)
                         {
@@ -313,16 +321,16 @@ namespace BuildingThemes.Detour
                     }
                     else
                     {
-                        num14--;
+                        Xnum12--;
                     }
                 }
                 else if (flag6)
                 {
-                    if (num16 - num15 > 1)
+                    if (Xn - Xnum13 > 1)
                     {
                         goto Block_40;
                     }
-                    if (num14 <= 2)
+                    if (Xnum12 <= 2)
                     {
                         if (!flag4)
                         {
@@ -331,16 +339,16 @@ namespace BuildingThemes.Detour
                     }
                     else
                     {
-                        num14--;
+                        Xnum12--;
                     }
                 }
                 else
                 {
-                    if (num15 != num16)
+                    if (Xnum13 != Xn)
                     {
                         goto IL_884;
                     }
-                    if (num14 <= 2)
+                    if (Xnum12 <= 2)
                     {
                         if (!flag4)
                         {
@@ -349,167 +357,172 @@ namespace BuildingThemes.Detour
                     }
                     else
                     {
-                        num14--;
+                        Xnum12--;
                     }
                 }
                 flag4 = false;
             }
-            num15++;
-            num16--;
+            Xnum13++;
+            Xn--;
             Block_34:
             goto IL_891;
             Block_36:
-            num15++;
+            Xnum13++;
             Block_38:
             goto IL_891;
             Block_40:
-            num16--;
+            Xn--;
             Block_42:
             Block_45:
             IL_884:
             IL_891:
-            int num19;
-            int num20;
-            if (num14 == 1 && num16 - num15 >= 1)
+            int Xnum16;
+            int Xnum17;
+            if (Xnum12 == 1 && Xn - Xnum13 >= 1)
             {
-                num15 += Singleton<SimulationManager>.instance.m_randomizer.Int32((uint)(num16 - num15));
-                num16 = num15 + 1;
-                num19 = num15 + Singleton<SimulationManager>.instance.m_randomizer.Int32(2u);
-                num20 = num19;
+                Xnum13 += Singleton<SimulationManager>.instance.m_randomizer.Int32((uint)(Xn - Xnum13));
+                Xn = Xnum13 + 1;
+                Xnum16 = Xnum13 + Singleton<SimulationManager>.instance.m_randomizer.Int32(2u);
+                Xnum17 = Xnum16;
             }
             else
             {
                 do
                 {
-                    num19 = num15;
-                    num20 = num16;
-                    if (num16 - num15 == 2)
+                    Xnum16 = Xnum13;
+                    Xnum17 = Xn;
+                    if (Xn - Xnum13 == 2)
                     {
                         if (Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) == 0)
                         {
-                            num20--;
+                            Xnum17--;
                         }
                         else
                         {
-                            num19++;
+                            Xnum16++;
                         }
                     }
-                    else if (num16 - num15 == 3)
+                    else if (Xn - Xnum13 == 3)
                     {
                         if (Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) == 0)
                         {
-                            num20 -= 2;
+                            Xnum17 -= 2;
                         }
                         else
                         {
-                            num19 += 2;
+                            Xnum16 += 2;
                         }
                     }
-                    else if (num16 - num15 == 4)
+                    else if (Xn - Xnum13 == 4)
                     {
                         if (Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) == 0)
                         {
-                            num16 -= 2;
-                            num20 -= 3;
+                            Xn -= 2;
+                            Xnum17 -= 3;
                         }
                         else
                         {
-                            num15 += 2;
-                            num19 += 3;
+                            Xnum13 += 2;
+                            Xnum16 += 3;
                         }
                     }
-                    else if (num16 - num15 == 5)
+                    else if (Xn - Xnum13 == 5)
                     {
                         if (Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) == 0)
                         {
-                            num16 -= 3;
-                            num20 -= 2;
+                            Xn -= 3;
+                            Xnum17 -= 2;
                         }
                         else
                         {
-                            num15 += 3;
-                            num19 += 2;
+                            Xnum13 += 3;
+                            Xnum16 += 2;
                         }
                     }
-                    else if (num16 - num15 >= 6)
+                    else if (Xn - Xnum13 >= 6)
                     {
-                        if (num15 == 0 || num16 == 12)
+                        if (Xnum13 == 0 || Xn == 12)
                         {
-                            if (num15 == 0)
+                            if (Xnum13 == 0)
                             {
-                                num15 = 3;
-                                num19 = 2;
+                                Xnum13 = 3;
+                                Xnum16 = 2;
                             }
-                            if (num16 == 12)
+                            if (Xn == 12)
                             {
-                                num16 = 9;
-                                num20 = 10;
+                                Xn = 9;
+                                Xnum17 = 10;
                             }
                         }
                         else if (Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) == 0)
                         {
-                            num16 = num15 + 3;
-                            num20 = num19 + 2;
+                            Xn = Xnum13 + 3;
+                            Xnum17 = Xnum16 + 2;
                         }
                         else
                         {
-                            num15 = num16 - 3;
-                            num19 = num20 - 2;
+                            Xnum13 = Xn - 3;
+                            Xnum16 = Xnum17 - 2;
                         }
                     }
                 }
-                while (num16 - num15 > 3 || num20 - num19 > 3);
+                while (Xn - Xnum13 > 3 || Xnum17 - Xnum16 > 3);
             }
+
             int depth_A = 4;
-            int width_A = num16 - num15 + 1;
+            int width_A = Xn - Xnum13 + 1;
             BuildingInfo.ZoningMode zoningMode = BuildingInfo.ZoningMode.Straight;
             bool flag7 = true;
-            for (int m = num15; m <= num16; m++)
+
+            for (int Xnum20 = Xnum13; Xnum20 <= Xn; Xnum20++)
             {
-                depth_A = Mathf.Min(depth_A, tmpXBuffer[m] & 65535);
-                if ((tmpXBuffer[m] & 131072) == 0)
+                depth_A = Mathf.Min(depth_A, tmpXBuffer[Xnum20] & 65535);
+                if ((tmpXBuffer[Xnum20] & 131072) == 0)
                 {
                     flag7 = false;
                 }
             }
-            if (num16 > num15)
+            if (Xn > Xnum13)
             {
-                if ((tmpXBuffer[num15] & 65536) != 0)
+                if ((tmpXBuffer[Xnum13] & 65536) != 0)
                 {
                     zoningMode = BuildingInfo.ZoningMode.CornerLeft;
-                    num20 = num15 + num20 - num19;
-                    num19 = num15;
+                    Xnum17 = Xnum13 + Xnum17 - Xnum16;
+                    Xnum16 = Xnum13;
                 }
-                if ((tmpXBuffer[num16] & 65536) != 0 && (zoningMode != BuildingInfo.ZoningMode.CornerLeft || Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) == 0))
+                if ((tmpXBuffer[Xn] & 65536) != 0 && (zoningMode != BuildingInfo.ZoningMode.CornerLeft || Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) == 0))
                 {
                     zoningMode = BuildingInfo.ZoningMode.CornerRight;
-                    num19 = num16 + num19 - num20;
-                    num20 = num16;
+                    Xnum16 = Xn + Xnum16 - Xnum17;
+                    Xnum17 = Xn;
                 }
             }
+
             int depth_B = 4;
-            int width_B = num20 - num19 + 1;
+            int width_B = Xnum17 - Xnum16 + 1;
             BuildingInfo.ZoningMode zoningMode2 = BuildingInfo.ZoningMode.Straight;
             bool flag8 = true;
-            for (int n = num19; n <= num20; n++)
+
+            for (int Xnum23 = Xnum16; Xnum23 <= Xnum17; Xnum23++)
             {
-                depth_B = Mathf.Min(depth_B, tmpXBuffer[n] & 65535);
-                if ((tmpXBuffer[n] & 131072) == 0)
+                depth_B = Mathf.Min(depth_B, tmpXBuffer[Xnum23] & 65535);
+                if ((tmpXBuffer[Xnum23] & 131072) == 0)
                 {
                     flag8 = false;
                 }
             }
-            if (num20 > num19)
+            if (Xnum17 > Xnum16)
             {
-                if ((tmpXBuffer[num19] & 65536) != 0)
+                if ((tmpXBuffer[Xnum16] & 65536) != 0)
                 {
                     zoningMode2 = BuildingInfo.ZoningMode.CornerLeft;
                 }
-                if ((tmpXBuffer[num20] & 65536) != 0 && (zoningMode2 != BuildingInfo.ZoningMode.CornerLeft || Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) == 0))
+                if ((tmpXBuffer[Xnum17] & 65536) != 0 && (zoningMode2 != BuildingInfo.ZoningMode.CornerLeft || Singleton<SimulationManager>.instance.m_randomizer.Int32(2u) == 0))
                 {
                     zoningMode2 = BuildingInfo.ZoningMode.CornerRight;
                 }
             }
+
             ItemClass.SubService subService = ItemClass.SubService.None;
             ItemClass.Level level = ItemClass.Level.Level1;
             ItemClass.Service service;
@@ -541,303 +554,154 @@ namespace BuildingThemes.Detour
                 default:
                     return;
             }
+
             BuildingInfo buildingInfo = null;
             Vector3 vector6 = Vector3.zero;
-            int num25_row = 0;
+            int row = 0;
             int length = 0;
             int width = 0;
             BuildingInfo.ZoningMode zoningMode3 = BuildingInfo.ZoningMode.Straight;
-            int num28 = 0;
 
-            // begin mod
-            int depth_alt = Mathf.Min(depth_A, 4);
-            int width_alt = width_A;
-            // end mod
+            // return to vanilla
 
-            while (num28 < 8) // while (num28 < 6)
-            {
-                switch (num28)
+            for (int Xnum27 = 0; Xnum27 < 6; Xnum27++)
+            { 
+                switch (Xnum27)
                 {
-                    // Corner cases
-
                     case 0:
-                        if (zoningMode != BuildingInfo.ZoningMode.Straight)
+                        if (zoningMode == BuildingInfo.ZoningMode.Straight)
                         {
-                            num25_row = num15 + num16 + 1;
-                            length = depth_A;
-                            width = width_A;
-                            zoningMode3 = zoningMode;
-                            goto IL_D6A;
+                            continue;
                         }
-                        break;
+                        row = Xnum13 + Xn + 1;
+                        length = depth_A;
+                        width = width_A;
+                        zoningMode3 = zoningMode;
+                        goto default;
+
                     case 1:
-                        if (zoningMode2 != BuildingInfo.ZoningMode.Straight)
+                        if (zoningMode2 == BuildingInfo.ZoningMode.Straight)
                         {
-                            num25_row = num19 + num20 + 1;
-                            length = depth_B;
-                            width = width_B;
-                            zoningMode3 = zoningMode2;
-                            goto IL_D6A;
+                            continue;
                         }
-                        break;
+                        row = Xnum16 + Xnum17 + 1;
+                        length = depth_B;
+                        width = width_B;
+                        zoningMode3 = zoningMode2;
+                        goto default;
+
                     case 2:
-                        if (zoningMode != BuildingInfo.ZoningMode.Straight)
+                        if (zoningMode == BuildingInfo.ZoningMode.Straight || depth_A < 4)
                         {
-                            if (depth_A >= 4)
-                            {
-                                num25_row = num15 + num16 + 1;
-                                length = ((!flag7) ? 2 : 3);
-                                width = width_A;
-                                zoningMode3 = zoningMode;
-                                goto IL_D6A;
-                            }
+                            continue;
                         }
-                        break;
+                        row = Xnum13 + Xn + 1;
+                        length = ((!flag7) ? 2 : 3);
+                        width = width_A;
+                        zoningMode3 = zoningMode;
+                        goto default;
+
                     case 3:
-                        if (zoningMode2 != BuildingInfo.ZoningMode.Straight)
+                        if (zoningMode2 == BuildingInfo.ZoningMode.Straight || depth_B < 4)
                         {
-                            if (depth_B >= 4)
-                            {
-                                num25_row = num19 + num20 + 1;
-                                length = ((!flag8) ? 2 : 3);
-                                width = width_B;
-                                zoningMode3 = zoningMode2;
-                                goto IL_D6A;
-                            }
+                            continue;
                         }
-                        break;
-                    // begin mod
+                        row = Xnum16 + Xnum17 + 1;
+                        length = ((!flag8) ? 2 : 3);
+                        width = width_B;
+                        zoningMode3 = zoningMode2;
+                        goto default;
+
                     case 4:
-                        if (zoningMode != BuildingInfo.ZoningMode.Straight)
-                        {
-                            if (width_alt > 1)
-                            {
-                                width_alt--;
-                            }
-                            else if (depth_alt > 1)
-                            {
-                                depth_alt--;
-                                width_alt = width_A;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                            if (width_alt == width_A)
-                            {
-                                num25_row = num15 + num16 + 1;
-
-                            }
-                            else
-                            {
-                                if (zoningMode == BuildingInfo.ZoningMode.CornerLeft)
-                                {
-                                    num25_row = num15 + num16 + 1 - (width_A - width_alt);
-                                }
-                                else
-                                {
-                                    num25_row = num15 + num16 + 1 + (width_A - width_alt);
-                                }
-                            }
-
-                            length = depth_alt;
-                            width = width_alt;
-
-                            zoningMode3 = zoningMode;
-
-                            num28--;
-                            goto IL_D6A;
-                        }
-                        break;
-                    // end mod
-                    // Straight cases
-                    case 5:
-                        num25_row = num15 + num16 + 1;
+                        row = Xnum13 + Xn + 1;
                         length = depth_A;
                         width = width_A;
                         zoningMode3 = BuildingInfo.ZoningMode.Straight;
-                        goto IL_D6A;
-                    case 6:
-                        // begin mod
+                        goto default;
 
-                        // reset variables
-                        depth_alt = Mathf.Min(depth_A, 4);
-                        width_alt = width_A;
-
-                        // end mod
-
-                        //int width_B = num20 - num19 + 1;
-                        num25_row = num19 + num20 + 1;
+                    case 5:
+                        row = Xnum16 + Xnum17 + 1;
                         length = depth_B;
                         width = width_B;
                         zoningMode3 = BuildingInfo.ZoningMode.Straight;
-                        goto IL_D6A;
-                    // begin mod
-                    case 7:
+                        goto default;
 
-                        if (width_alt > 1)
+                    default:
                         {
-                            width_alt--;
-                        }
-                        else
-                        {
+                            vector6 = m_position + VectorUtils.X_Y(((float)length * 0.5f - 4f) * xDirection + ((float)row * 0.5f + (float)spawnpointRow - 10f) * zDirection);
+                            switch (zone)
+                            {
+                                case ItemClass.Zone.Industrial:
+                                    ZoneBlock.GetIndustryType(vector6, out subService, out level);
+                                    break;
+                                case ItemClass.Zone.CommercialLow:
+                                case ItemClass.Zone.CommercialHigh:
+                                    ZoneBlock.GetCommercialType(vector6, zone, width, length, out subService, out level);
+                                    break;
+                                case ItemClass.Zone.ResidentialLow:
+                                case ItemClass.Zone.ResidentialHigh:
+                                    ZoneBlock.GetResidentialType(vector6, zone, width, length, out subService, out level);
+                                    break;
+                                case ItemClass.Zone.Office:
+                                    ZoneBlock.GetOfficeType(vector6, zone, width, length, out subService, out level);
+                                    break;
+                            }
+                            byte district2 = instance2.GetDistrict(vector6);
+                            ushort style = instance2.m_districts.m_buffer[district2].m_Style;
+                            if (Singleton<BuildingManager>.instance.m_BuildingWrapper != null)
+                            {
+                                Singleton<BuildingManager>.instance.m_BuildingWrapper.OnCalculateSpawn(vector6, ref service, ref subService, ref level, ref style);
+                            }
+                            // Call modded building manager
+                            buildingInfo = RandomBuildings.GetRandomBuildingInfo_Spawn(vector6, ref Singleton<SimulationManager>.instance.m_randomizer, service, subService, level, width, length, zoningMode3, style);
+
+
+                            if ((object)buildingInfo == null)
+                            {
+                                continue;
+                            }
+                            if (Debugger.Enabled)
+                            {
+                                Debugger.LogFormat("Prefab Found: {5} - {0}, {1}, {2}, {3} x {4}", service, subService, level, width, length, buildingInfo.name);
+                            }
                             break;
                         }
-
-                        if (width_alt == width_A)
-                        {
-                            num25_row = num15 + num16 + 1;
-                        }
-                        else if (width_A % 2 != width_alt % 2)
-                        {
-                            num25_row = num15 + num16;
-                        }
-                        else
-                        {
-                            num25_row = num15 + num16 + 1;
-                        }
-
-                        length = depth_alt;
-                        width = width_alt;
-
-                        zoningMode3 = BuildingInfo.ZoningMode.Straight;
-
-                        num28--;
-                        goto IL_D6A;
-                    // end mod
-                    default:
-                        goto IL_D6A;
                 }
-                IL_DF0:
-                num28++;
-                continue;
-                IL_D6A:
-                vector6 = m_position + VectorUtils.X_Y(((float)length * 0.5f - 4f) * xDirection + ((float)num25_row * 0.5f + (float)spawnpointRow - 10f) * zDirection);
-                if (zone == ItemClass.Zone.Industrial)
-                {
-                    ZoneBlock.GetIndustryType(vector6, out subService, out level);
-                }
-                else if (zone == ItemClass.Zone.CommercialLow || zone == ItemClass.Zone.CommercialHigh)
-                {
-                    ZoneBlock.GetCommercialType(vector6, zone, width, length, out subService, out level);
-                }
-                else if (zone == ItemClass.Zone.ResidentialLow || zone == ItemClass.Zone.ResidentialHigh)
-                {
-                    ZoneBlock.GetResidentialType(vector6, zone, width, length, out subService, out level);
-                }
-                else if (zone == ItemClass.Zone.Office)
-                {
-                    ZoneBlock.GetOfficeType(vector6, zone, width, length, out subService, out level);
-                }
-
-                byte district2 = instance2.GetDistrict(vector6);
-                ushort style = instance2.m_districts.m_buffer[(int)district2].m_Style;
-                if (Singleton<BuildingManager>.instance.m_BuildingWrapper != null)
-                {
-                    Singleton<BuildingManager>.instance.m_BuildingWrapper.OnCalculateSpawn(vector6, ref service, ref subService, ref level, ref style);
-                }
-
-                // begin mod
-
-                // Here we are calling a custom getRandomBuildingInfo method
-
-                buildingInfo = RandomBuildings.GetRandomBuildingInfo_Spawn(vector6, ref Singleton<SimulationManager>.instance.m_randomizer, service, subService, level, width, length, zoningMode3, style);
-
-                // end mod
-
-                if (buildingInfo != null)
-                {
-                    // begin mod
-
-                    // If the depth of the found prefab is smaller than the one we were looking for, recalculate the size
-                    // This is done by checking the position of every prop
-                    // Plots only get shrinked when no assets are placed on the extra space
-
-                    // This is needed for themes which only contain small buildings (e.g. 1x2) 
-                    // because those buildings would occupy more space than needed!
-
-                    if (buildingInfo.GetWidth() == width && buildingInfo.GetLength() != length)
-                    {
-                        // Calculate the z position of the furthest away prop
-                        float biggestPropPosZ = 0;
-
-                        if (buildingInfo.m_props != null)
-                        {
-                            foreach (var prop in buildingInfo.m_props)
-                            {
-                                if (prop == null) continue;
-
-                                biggestPropPosZ = Mathf.Max(biggestPropPosZ, buildingInfo.m_expandFrontYard ? prop.m_position.z : -prop.m_position.z);
-                            }
-                        }
-
-                        // Check if the furthest away prop is outside of the bounds of the prefab
-                        float occupiedExtraSpace = biggestPropPosZ - buildingInfo.GetLength() * 4;
-                        if (occupiedExtraSpace <= 0)
-                        {
-                            // No? Then shrink the plot to the prefab length so no space is wasted!
-                            length = buildingInfo.GetLength();
-                        }
-                        else
-                        {
-                            // Yes? Shrink the plot so all props are in the bounds
-                            int newLength = buildingInfo.GetLength() + Mathf.CeilToInt(occupiedExtraSpace / 8);
-                            length = Mathf.Min(length, newLength);
-                        }
-
-                        vector6 = m_position + VectorUtils.X_Y(((float)length * 0.5f - 4f) * xDirection + ((float)num25_row * 0.5f + (float)spawnpointRow - 10f) * zDirection);
-                    }
-
-                    // This block handles Corner buildings. We always shrink them
-                    else if (buildingInfo.GetLength() == width && buildingInfo.GetWidth() != length)
-                    {
-                        length = buildingInfo.GetWidth();
-                        vector6 = m_position + VectorUtils.X_Y(((float)length * 0.5f - 4f) * xDirection + ((float)num25_row * 0.5f + (float)spawnpointRow - 10f) * zDirection);
-                    }
-
-                    // end mod
-
-                    if (Debugger.Enabled)
-                    {
-                        Debugger.LogFormat("Found prefab: {5} - {0}, {1}, {2}, {3} x {4}", service, subService, level, width, length, buildingInfo.name);
-                    }
-                    break;
-                }
-                if (Debugger.Enabled)
-                {
-
-                }
-                goto IL_DF0;
+                break;
             }
+
             if (buildingInfo == null)
             {
+                // No prefab found
                 if (Debugger.Enabled)
                 {
-                    Debugger.LogFormat("No prefab found: {0}, {1}, {2}, {3} x {4}", service, subService, level, width, length);
+                    Debugger.LogFormat("No Suitable Prefab Found: {0}, {1}, {2}, {3} x {4}", service, subService, level, width, length);
                 }
                 return;
             }
-            float num29 = Singleton<TerrainManager>.instance.WaterLevel(VectorUtils.XZ(vector6));
-            if (num29 > vector6.y)
+
+            // end of return to the vanilla
+
+            float Xnum28 = Singleton<TerrainManager>.instance.WaterLevel(VectorUtils.XZ(vector6));
+            if (Xnum28 > vector6.y || Singleton<DisasterManager>.instance.IsEvacuating(vector6))
             {
                 return;
             }
-            float num30 = m_angle + 1.57079637f;
+            float Xnum29 = m_angle + (float)Math.PI / 2f;
             if (zoningMode3 == BuildingInfo.ZoningMode.CornerLeft && buildingInfo.m_zoningMode == BuildingInfo.ZoningMode.CornerRight)
             {
-                num30 -= 1.57079637f;
+                Xnum29 -= (float)Math.PI / 2f;
                 length = width;
             }
             else if (zoningMode3 == BuildingInfo.ZoningMode.CornerRight && buildingInfo.m_zoningMode == BuildingInfo.ZoningMode.CornerLeft)
             {
-                num30 += 1.57079637f;
+                Xnum29 += (float)Math.PI / 2f;
                 length = width;
             }
-            ushort num31;
-            if (Singleton<BuildingManager>.instance.CreateBuilding(out num31, ref Singleton<SimulationManager>.instance.m_randomizer, buildingInfo, vector6, num30, length, Singleton<SimulationManager>.instance.m_currentBuildIndex))
+
+            if (Singleton<BuildingManager>.instance.CreateBuilding(out var building, ref Singleton<SimulationManager>.instance.m_randomizer, buildingInfo, vector6, Xnum29, length, Singleton<SimulationManager>.instance.m_currentBuildIndex))
             {
-                Singleton<SimulationManager>.instance.m_currentBuildIndex += 1u;
+                Singleton<SimulationManager>.instance.m_currentBuildIndex++;
                 switch (service)
                 {
                     case ItemClass.Service.Residential:
@@ -853,17 +717,9 @@ namespace BuildingThemes.Detour
                         zoneManager.m_actualWorkplaceDemand = Mathf.Max(0, zoneManager.m_actualWorkplaceDemand - 5);
                         break;
                 }
-
-                switch (zone)
+                if (zone == ItemClass.Zone.ResidentialHigh || zone == ItemClass.Zone.CommercialHigh)
                 {
-                    case ItemClass.Zone.ResidentialHigh:
-                    case ItemClass.Zone.CommercialHigh:
-                        {
-                            Building[] expr_FD7_cp_0 = Singleton<BuildingManager>.instance.m_buildings.m_buffer;
-                            ushort expr_FD7_cp_1 = num31;
-                            expr_FD7_cp_0[(int)expr_FD7_cp_1].m_flags = (expr_FD7_cp_0[(int)expr_FD7_cp_1].m_flags | Building.Flags.HighDensity);
-                            break;
-                        }
+                    Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_flags |= Building.Flags.HighDensity;
                 }
             }
             zoneManager.m_goodAreaFound[(int)zone] = 1024;

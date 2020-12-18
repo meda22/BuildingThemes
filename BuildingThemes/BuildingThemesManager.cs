@@ -538,7 +538,8 @@ namespace BuildingThemes
                     }
                 }
             }
-            int num3 = 24;
+            
+            int num3 = 24; // to support all RICO district types
             for (int k = 0; k < num3; k++)
             {
                 for (int l = 0; l < 5; l++)
@@ -577,9 +578,17 @@ namespace BuildingThemes
         public static int GetAreaIndex(ItemClass.Service service, ItemClass.SubService subService, ItemClass.Level level, int width, int length, BuildingInfo.ZoningMode zoningMode)
         {
             int privateSubServiceIndex = ItemClass.GetPrivateSubServiceIndex(subService);
-            int num = (int)((privateSubServiceIndex == -1 ? ItemClass.GetPrivateServiceIndex(service) : 8 + privateSubServiceIndex) * 5 + level);
-            return zoningMode != BuildingInfo.ZoningMode.CornerRight ? (int)(((num * 4 + width - 1) * 4 + length - 1) * 2 + zoningMode) : ((num * 4 + length - 1) * 4 + width - 1) * 2 + 1;
-
+            int num = ((privateSubServiceIndex == -1) ? ItemClass.GetPrivateServiceIndex(service) : (8 + privateSubServiceIndex));
+            num = (int)(num * 5 + level);
+            if (zoningMode == BuildingInfo.ZoningMode.CornerRight)
+            {
+                num = num * 4 + length - 1;
+                num = num * 4 + width - 1;
+                return num * 2 + 1;
+            }
+            num = num * 4 + width - 1;
+            num = num * 4 + length - 1;
+            return (int)(num * 2 + zoningMode);
         }
 
         public FastList<ushort> GetAreaBuildings(byte districtId, int areaIndex)

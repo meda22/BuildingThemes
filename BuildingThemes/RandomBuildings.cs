@@ -17,6 +17,11 @@ namespace BuildingThemes
 
             var areaIndex = BuildingThemesManager.GetAreaIndex(service, subService, level, width, length, zoningMode);
 
+            if (Debugger.Enabled)
+            {
+                Debugger.LogFormat("Area index: {0}", areaIndex);
+            }
+
             var districtId = Singleton<DistrictManager>.instance.GetDistrict(position);
             FastList<ushort> fastList = Singleton<BuildingThemesManager>.instance.GetAreaBuildings(districtId, areaIndex);
 
