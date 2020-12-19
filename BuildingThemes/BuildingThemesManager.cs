@@ -538,6 +538,7 @@ namespace BuildingThemes
                     }
                 }
             }
+            
             int num3 = 24; // to support all RICO district types
             for (int k = 0; k < num3; k++)
             {
