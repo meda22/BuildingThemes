@@ -15,7 +15,7 @@ namespace BuildingThemes
         public static Vector3 position;
         public static readonly string EIGHTY_ONE_MOD = "81 Tiles (Fixed for C:S 1.2+)";
 
-        public string Name => "Building Themes";
+        public string Name => "Building Themes Normal BackYards";
 
         public string Description => "Create building themes and apply them to cities and districts.";
 
