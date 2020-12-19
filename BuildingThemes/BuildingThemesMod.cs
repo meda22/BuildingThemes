@@ -1,5 +1,5 @@
 ﻿using ICities;
-using BuildingThemes.GUI;
+using BuildingThemes.GUI.ThemePolicies;
 using UnityEngine;
 using CitiesHarmony.API;
 
@@ -17,13 +17,14 @@ namespace BuildingThemes
 
         public static readonly string EIGHTY_ONE_MOD = "81 Tiles (Fixed for C:S 1.2+)";
 
-        public string Name => "Building Themes";
+        public string Name => "Building Themes WIP";
 
         public string Description => "Create building themes and apply them to cities and districts.";
 
         public void OnEnabled() 
         {
-            HarmonyHelper.DoOnHarmonyReady(() => Patcher.PatchAll());
+            // TODO: we should check here if building cloning detour should be used (BuildingInfoDetour)
+            HarmonyHelper.DoOnHarmonyReady(Patcher.PatchAll);
         }
 
         public void OnDisabled() 

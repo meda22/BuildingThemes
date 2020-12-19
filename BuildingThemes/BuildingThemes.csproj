@@ -62,12 +62,9 @@
     <Compile Include="Debugger.cs" />
     <Compile Include="Detour\BuildingInfoDetour.cs" />
     <Compile Include="Detour\DistrictManagerDetour.cs" />
-    <Compile Include="Detour\DistrictWorldInfoPanelDetour.cs" />
-    <Compile Include="Detour\PrivateBuildingAIDetour.cs" />
     <Compile Include="Detour\ImmaterialResourceManagerDetour.cs" />
     <Compile Include="Detour\BuildingManagerDetour.cs" />
     <Compile Include="Detour\ZoneBlockDetour.cs" />
-    <Compile Include="Detour\PoliciesPanelDetour.cs" />
     <Compile Include="GUI\ThemeManager\BuildingItem.cs" />
     <Compile Include="GUI\ThemeManager\CategoryUtils.cs" />
     <Compile Include="GUI\ThemeManager\UIBuildingPreview.cs" />
@@ -90,7 +87,10 @@
     <Compile Include="GUI\UITitleBar.cs" />
     <Compile Include="GUI\UIUtils.cs" />
     <Compile Include="LoadingExtension.cs" />
+    <Compile Include="Patches\DistrictWorldInfoPanelPatch.cs" />
     <Compile Include="Patches\Patcher.cs" />
+    <Compile Include="Patches\PoliciesPanelPatch.cs" />
+    <Compile Include="Patches\PrivateBuildingAIPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomBuildings.cs" />
     <Compile Include="Redirection\RedirectionUtil.cs" />

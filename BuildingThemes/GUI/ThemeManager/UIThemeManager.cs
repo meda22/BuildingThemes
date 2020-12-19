@@ -1,13 +1,14 @@
-﻿using ColossalFramework;
-using ColossalFramework.PlatformServices;
-using ColossalFramework.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BuildingThemes.GUI.ThemePolicies;
+using ColossalFramework;
+using ColossalFramework.PlatformServices;
+using ColossalFramework.UI;
 using UnityEngine;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemeManager
 {
     public class UIThemeManager : UIPanel
     {
@@ -69,7 +70,7 @@ namespace BuildingThemes.GUI
                 // Creating our own gameObect, helps finding the UI in ModTools
                 _gameObject = new GameObject("BuildingThemes");
                 _gameObject.transform.parent = UIView.GetAView().transform;
-                _instance = _gameObject.AddComponent<GUI.UIThemeManager>();
+                _instance = _gameObject.AddComponent<UIThemeManager>();
             }
             catch (Exception e)
             {

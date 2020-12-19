@@ -1,7 +1,7 @@
 ﻿using ColossalFramework;
 using UnityEngine;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemeManager
 {
     public class PreviewRenderer : MonoBehaviour
     {

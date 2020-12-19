@@ -8,13 +8,18 @@ using BuildingThemes.Redirection;
 
 namespace BuildingThemes.Detour
 {
+    
+    /// <summary>
+    /// This Patch is used for building cloning only so far
+    /// TODO: we will probably leave it out for now
+    /// </summary>
     public class BuildingInfoDetour : BuildingInfo
     {
         private static bool deployed = false;
         private static bool isGrowable = false;
         private static BuildingInfo previousPrefab = null;
 
-        private static RedirectCallsState _InitializePrefab_state;
+        // TODO: private static RedirectCallsState _InitializePrefab_state;
         private static MethodInfo _InitializePrefab_original;
         private static MethodInfo _InitializePrefab_detour;
 
@@ -52,7 +57,7 @@ namespace BuildingThemes.Detour
                 {
                     _InitializePrefab_original = typeof(BuildingInfo).GetMethod("InitializePrefab", BindingFlags.Instance | BindingFlags.Public);
                     _InitializePrefab_detour = typeof(BuildingInfoDetour).GetMethod("InitializePrefab", BindingFlags.Instance | BindingFlags.Public);
-                    _InitializePrefab_state = RedirectionHelper.RedirectCalls(_InitializePrefab_original, _InitializePrefab_detour);
+                    // TODO: _InitializePrefab_state = RedirectionHelper.RedirectCalls(_InitializePrefab_original, _InitializePrefab_detour);
                 }
                 deployed = true;
 
@@ -82,7 +87,7 @@ namespace BuildingThemes.Detour
                 }
                 else
                 {
-                    RedirectionHelper.RevertRedirect(_InitializePrefab_original, _InitializePrefab_state);
+                    // TODO: RedirectionHelper.RevertRedirect(_InitializePrefab_original, _InitializePrefab_state);
                     _InitializePrefab_original = null;
                     _InitializePrefab_detour = null;
                 }
@@ -103,14 +108,14 @@ namespace BuildingThemes.Detour
                 isGrowable = false;
                 previousPrefab = null;
             }
-            RedirectionHelper.RevertRedirect(_InitializePrefab_original, _InitializePrefab_state);
+            // TODO: RedirectionHelper.RevertRedirect(_InitializePrefab_original, _InitializePrefab_state);
             try
             {
                 base.InitializePrefab();
             }
             finally
             {
-                RedirectionHelper.RedirectCalls(_InitializePrefab_original, _InitializePrefab_detour);
+                // TODO: RedirectionHelper.RedirectCalls(_InitializePrefab_original, _InitializePrefab_detour);
             }
             try
             {

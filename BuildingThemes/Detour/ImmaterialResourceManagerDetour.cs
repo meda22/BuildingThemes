@@ -10,7 +10,7 @@ namespace BuildingThemes.Detour
     {
         private static bool deployed = false;
 
-        private static RedirectCallsState _ImmaterialResourceManager_AddResource_state;
+        // TODO: private static RedirectCallsState _ImmaterialResourceManager_AddResource_state;
         private static MethodInfo _ImmaterialResourceManager_AddResource_original;
         private static MethodInfo _ImmaterialResourceManager_AddResource_detour;
 
@@ -24,7 +24,7 @@ namespace BuildingThemes.Detour
             _ImmaterialResourceManager_AddResource_original = typeof(ImmaterialResourceManager).GetMethod("AddResource",
                 new[] { typeof(ImmaterialResourceManager.Resource), typeof(int), typeof(Vector3), typeof(float) });
             _ImmaterialResourceManager_AddResource_detour = typeof(ImmaterialResourceManagerDetour).GetMethod("AddResource", BindingFlags.Instance | BindingFlags.Public);
-            _ImmaterialResourceManager_AddResource_state = RedirectionHelper.RedirectCalls(_ImmaterialResourceManager_AddResource_original, _ImmaterialResourceManager_AddResource_detour);
+            // TODO: _ImmaterialResourceManager_AddResource_state = RedirectionHelper.RedirectCalls(_ImmaterialResourceManager_AddResource_original, _ImmaterialResourceManager_AddResource_detour);
 
             deployed = true;
 
@@ -37,7 +37,7 @@ namespace BuildingThemes.Detour
             {
                 return;
             }
-            RedirectionHelper.RevertRedirect(_ImmaterialResourceManager_AddResource_original, _ImmaterialResourceManager_AddResource_state);
+            // TODO:  RedirectionHelper.RevertRedirect(_ImmaterialResourceManager_AddResource_original, _ImmaterialResourceManager_AddResource_state);
             _ImmaterialResourceManager_AddResource_original = null;
             _ImmaterialResourceManager_AddResource_detour = null;
 
@@ -65,9 +65,9 @@ namespace BuildingThemes.Detour
             }
 
             // Call the original method
-            RedirectionHelper.RevertRedirect(_ImmaterialResourceManager_AddResource_original, _ImmaterialResourceManager_AddResource_state);
+            // TODO: RedirectionHelper.RevertRedirect(_ImmaterialResourceManager_AddResource_original, _ImmaterialResourceManager_AddResource_state);
             var result = Singleton<ImmaterialResourceManager>.instance.AddResource(resource, rate, positionArg, radius);
-            RedirectionHelper.RedirectCalls(_ImmaterialResourceManager_AddResource_original, _ImmaterialResourceManager_AddResource_detour);
+            // TODO: RedirectionHelper.RedirectCalls(_ImmaterialResourceManager_AddResource_original, _ImmaterialResourceManager_AddResource_detour);
 
             return result;
         }

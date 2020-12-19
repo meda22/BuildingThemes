@@ -1,7 +1,6 @@
-using ColossalFramework;
 using ColossalFramework.UI;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemePolicies
 {
     // This helper component updates the "Enable Theme Management" checkbox state in the policy panel every game tick.
     public class ThemeManagementCheckboxContainer : ToolsModifierControl
