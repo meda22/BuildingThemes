@@ -1,23 +1,35 @@
-﻿using System;
-using ICities;
+﻿using ICities;
 using BuildingThemes.GUI;
-using ColossalFramework.UI;
 using UnityEngine;
+using CitiesHarmony.API;
 
 namespace BuildingThemes
 {
     public class BuildingThemesMod : IUserMod
     {
+        // flag for corrupted xml config
         public static bool xmlCorrupt = false;
         
         
-        // we'll use this variable to pass the building position to GetRandomBuildingInfo method. It's here to make possible 81 Tiles compatibility
+        // we'll use this variable to pass the building position to GetRandomBuildingInfo method. 
+        // It's here to make possible 81 Tiles compatibility
         public static Vector3 position;
+
         public static readonly string EIGHTY_ONE_MOD = "81 Tiles (Fixed for C:S 1.2+)";
 
         public string Name => "Building Themes";
 
         public string Description => "Create building themes and apply them to cities and districts.";
+
+        public void OnEnabled() 
+        {
+            HarmonyHelper.DoOnHarmonyReady(() => Patcher.PatchAll());
+        }
+
+        public void OnDisabled() 
+        {
+            if (HarmonyHelper.IsHarmonyInstalled) Patcher.UnpatchAll();
+        }
 
         public void OnSettingsUI(UIHelperBase helper)
         {
