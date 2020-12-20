@@ -12,8 +12,7 @@
 // {
 //     
 //     /// <summary>
-//     /// This Patch is used for building cloning only so far
-//     /// TODO: we will probably leave it out for now
+//     /// TODO: Fix this one - prefab hook problem - can be tested with more network stuff mod
 //     /// </summary>
 //     public class BuildingInfoDetour : BuildingInfo
 //     {
