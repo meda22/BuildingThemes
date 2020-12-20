@@ -1,67 +1,50 @@
-﻿using ColossalFramework;
-using ColossalFramework.Math;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
-using BuildingThemes.Redirection;
+using ColossalFramework;
+using ColossalFramework.Math;
+using HarmonyLib;
 using UnityEngine;
 
-namespace BuildingThemes.Detour
+namespace BuildingThemes.Patches
 {
-    [TargetType(typeof(ZoneBlock))]
-    public struct ZoneBlockDetour
+
+    [HarmonyPatch(typeof(ZoneBlock))]
+    static class ZoneBlockPatch
     {
+        
         private static int _zoneGridResolution = ZoneManager.ZONEGRID_RESOLUTION;
         private static int _zoneGridHalfResolution = ZoneManager.ZONEGRID_RESOLUTION / 2;
         private static readonly int EIGHTY_ONE_ZONEGRID_RESOLUTION = 270;
         private static readonly int EIGHTY_ONE_HALF_ZONEGRID_RESOLUTION = EIGHTY_ONE_ZONEGRID_RESOLUTION / 2;
-
-        public static void SetUp()
-        {
-            if (!Util.IsModActive(BuildingThemesMod.EIGHTY_ONE_MOD))
-            {
-                return;
-            }
-            _zoneGridResolution = EIGHTY_ONE_ZONEGRID_RESOLUTION;
-            _zoneGridHalfResolution = EIGHTY_ONE_HALF_ZONEGRID_RESOLUTION;
-        }
-
+        
         private static int debugCount = 0;
+        
 
-        [RedirectReverse]
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void CheckBlock(ref ZoneBlock zoneBlock, ref ZoneBlock other, int[] xBuffer, ItemClass.Zone zone, Vector2 startPos, Vector2 xDir,
-            Vector2 zDir, Quad2 quad)
+        [HarmonyPatch("SimulationStep")]
+        [HarmonyPatch(new [] {typeof(ushort)},
+            new [] {ArgumentType.Normal})]
+        static bool Prefix(ref ZoneBlock __instance, ushort blockID)
         {
-            UnityEngine.Debug.LogError($"CheckBlock(): this={zoneBlock}"); //this is just to give the method some body
-        }
+            // check if 81 mod is active - and in that case, set up different grid
+            if (Util.IsModActive(BuildingThemesMod.EIGHTY_ONE_MOD))
+            {
+                _zoneGridResolution = EIGHTY_ONE_ZONEGRID_RESOLUTION;
+                _zoneGridHalfResolution = EIGHTY_ONE_HALF_ZONEGRID_RESOLUTION;
+            }
 
-        [RedirectReverse]
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool IsGoodPlace(ref ZoneBlock zoneBlock, Vector2 position)
-        {
-            UnityEngine.Debug.LogError($"IsGoodPlace(): this={zoneBlock}"); //this is just to give the method some body
-            return false;
-        }
-
-        // This method contains the modified plot calculation algorithm
-        // Segments which were changed are marked with "begin mod" and "end mod"
-
-        [RedirectMethod]
-        public static void SimulationStep(ref ZoneBlock zoneBlock, ushort blockID)
-        {
             if (Debugger.Enabled && debugCount < 10)
             {
                 debugCount++;
-                Debugger.LogFormat("Building Themes: Detoured ZoneBlock.SimulationStep was called. blockID: {0}, position: {1}.", blockID, zoneBlock.m_position);
+                Debugger.LogFormat("Building Themes: Detoured ZoneBlock.SimulationStep was called. blockID: {0}, position: {1}.", blockID, __instance.m_position);
             }
 
             ZoneManager zoneManager = Singleton<ZoneManager>.instance;
-            int rowCount = zoneBlock.RowCount;
-            float m_angle = zoneBlock.m_angle;
+            int rowCount = __instance.RowCount;
+            float m_angle = __instance.m_angle;
 
             Vector2 xDirection = new Vector2(Mathf.Cos(m_angle), Mathf.Sin(m_angle)) * 8f;
             Vector2 zDirection = new Vector2(xDirection.y, -xDirection.x);
-            ulong num = zoneBlock.m_valid & ~(zoneBlock.m_occupied1 | zoneBlock.m_occupied2);
+            ulong num = __instance.m_valid & ~(__instance.m_occupied1 | __instance.m_occupied2);
             int spawnpointRow = 0;
             ItemClass.Zone zone = ItemClass.Zone.Unzoned;
             
@@ -71,13 +54,13 @@ namespace BuildingThemes.Detour
                 spawnpointRow = Singleton<SimulationManager>.instance.m_randomizer.Int32((uint)rowCount);
                 if ((num & 1uL << (spawnpointRow << 3)) != 0uL)
                 {
-                    zone = zoneBlock.GetZone(0, spawnpointRow);
+                    zone = __instance.GetZone(0, spawnpointRow);
                 }
                 num3++;
             }
 
             DistrictManager instance2 = Singleton<DistrictManager>.instance;
-            Vector3 m_position = (Vector3)zoneBlock.m_position;
+            Vector3 m_position = __instance.m_position;
             byte district = instance2.GetDistrict(m_position);
 
             int actualWorkplaceDemand;
@@ -108,7 +91,7 @@ namespace BuildingThemes.Detour
                     actualWorkplaceDemand += instance2.m_districts.m_buffer[(int)district].CalculateOfficeDemandOffset();
                     break;
                 default:
-                    return;
+                    return false; // TODO: check if it is right - skip vanilla method
             }
 
             Vector2 a = VectorUtils.XZ(m_position);
@@ -151,7 +134,7 @@ namespace BuildingThemes.Detour
 
                         if (Xnum9 < 0f)
                         {
-                            CheckBlock(ref zoneBlock, ref zoneManager.m_blocks.m_buffer[(int)Xnum7], tmpXBuffer, zone, vector3, xDirection, zDirection, quad);
+                            CheckBlock(ref __instance, ref zoneManager.m_blocks.m_buffer[(int)Xnum7], tmpXBuffer, zone, vector3, xDirection, zDirection, quad);
                         }
                         Xnum7 = zoneManager.m_blocks.m_buffer[(int)Xnum7].m_nextGridBlock;
                         if (++Xnum8 >= 49152)
@@ -201,10 +184,10 @@ namespace BuildingThemes.Detour
             int Xnum12 = tmpXBuffer[6] & 65535;
             if (Xnum12 == 0)
             {
-                return;
+                return false; // TODO: check if it is right - skip vanilla method
             }
 
-            bool flag3 = IsGoodPlace(ref zoneBlock, vector3);
+            bool flag3 = IsGoodPlace(ref __instance, vector3);
             
             if (Singleton<SimulationManager>.instance.m_randomizer.Int32(100u) >= actualWorkplaceDemand)
             {
@@ -212,7 +195,7 @@ namespace BuildingThemes.Detour
                 {
                     zoneManager.m_goodAreaFound[(int)zone] = 1024;
                 }
-                return;
+                return false; // TODO: check if it is right - skip vanilla method
             }
            
             if (!flag3 && zoneManager.m_goodAreaFound[(int)zone] > -1024)
@@ -221,7 +204,7 @@ namespace BuildingThemes.Detour
                 {
                     zoneManager.m_goodAreaFound[(int)zone] = -1;
                 }
-                return;
+                return false; // TODO: check if it is right - skip vanilla method
             }
 
             int Xnum13 = 6;
@@ -552,7 +535,7 @@ namespace BuildingThemes.Detour
                     subService = ItemClass.SubService.None;
                     break;
                 default:
-                    return;
+                    return false; // TODO: check if it is right - skip vanilla method
             }
 
             BuildingInfo buildingInfo = null;
@@ -677,7 +660,7 @@ namespace BuildingThemes.Detour
                 {
                     Debugger.LogFormat("No Suitable Prefab Found: {0}, {1}, {2}, {3} x {4}", service, subService, level, width, length);
                 }
-                return;
+                return false; // TODO: check if it is right - skip vanilla method
             }
 
             // end of return to the vanilla
@@ -685,7 +668,7 @@ namespace BuildingThemes.Detour
             float Xnum28 = Singleton<TerrainManager>.instance.WaterLevel(VectorUtils.XZ(vector6));
             if (Xnum28 > vector6.y || Singleton<DisasterManager>.instance.IsEvacuating(vector6))
             {
-                return;
+                return false; // TODO: check if it is right - skip vanilla method
             }
             float Xnum29 = m_angle + (float)Math.PI / 2f;
             if (zoningMode3 == BuildingInfo.ZoningMode.CornerLeft && buildingInfo.m_zoningMode == BuildingInfo.ZoningMode.CornerRight)
@@ -723,6 +706,28 @@ namespace BuildingThemes.Detour
                 }
             }
             zoneManager.m_goodAreaFound[(int)zone] = 1024;
+            
+            // skip vanilla method
+            return false;
+        }
+
+        [HarmonyReversePatch]
+        [HarmonyPatch("IsGoodPlace")]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static bool IsGoodPlace(ref ZoneBlock zoneBlock, Vector2 vector3)
+        {
+            Debugger.LogError("ZoneBlock.IsGoodPlace reverse Harmony patch was not applied");
+            throw new NotImplementedException("ZoneBlock.IsGoodPlace reverse Harmony patch was not applied");
+        }
+
+        [HarmonyReversePatch]
+        [HarmonyPatch("CheckBlock")]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static void CheckBlock(ref ZoneBlock zoneBlock, ref ZoneBlock zoneBlock1, int[] tmpXBuffer, ItemClass.Zone zone, Vector2 vector3, Vector2 xDirection, Vector2 zDirection, Quad2 quad)
+        {
+            Debugger.LogError("ZoneBlock.CheckBlock reverse Harmony patch was not applied");
+            throw new NotImplementedException("ZoneBlock.CheckBlock reverse Harmony patch was not applied");
         }
     }
+    
 }

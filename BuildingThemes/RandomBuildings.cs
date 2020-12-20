@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace BuildingThemes
 {
+    
+    // TODO: check if we can do it in other way
     public static class RandomBuildings
     {
 

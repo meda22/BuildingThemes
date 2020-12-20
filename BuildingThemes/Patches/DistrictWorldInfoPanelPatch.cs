@@ -4,12 +4,17 @@ using HarmonyLib;
 namespace BuildingThemes.Patches
 {
 
-    [HarmonyPatch(typeof(DistrictWorldInfoPanel), "OnPoliciesClick")]
-    static class OnPoliciesClickPatch
+    [HarmonyPatch(typeof(DistrictWorldInfoPanel))]
+    static class DistrictWorldInfoPanelPatch
     {
-        static void Postfix()
+
+        [HarmonyPostfix]
+        [HarmonyPatch("OnPoliciesClick")]
+        static void OnPoliciesClickPostfix()
         {
             UIView.Find<UIPanel>("PoliciesPanel").Find<UITabstrip>("Tabstrip").selectedIndex = 0;
         }
+
     }
+
 }
