@@ -20,7 +20,7 @@ namespace BuildingThemes
 
         public string Name => "Building Themes WIP";
 
-        public string Description => "Create building themes and apply them to cities and districts.";
+        public string Description => "Create building themes and apply them to cities and districts. Trying some stuff.";
 
         public void OnEnabled() 
         {
