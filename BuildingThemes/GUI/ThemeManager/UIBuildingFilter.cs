@@ -1,9 +1,8 @@
-﻿using System;
-using ColossalFramework.PlatformServices;
-using UnityEngine;
+﻿using ColossalFramework.PlatformServices;
 using ColossalFramework.UI;
+using UnityEngine;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemeManager
 {
     public class UIBuildingFilter : UIPanel
     {

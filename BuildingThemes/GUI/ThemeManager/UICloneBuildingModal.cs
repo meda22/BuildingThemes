@@ -1,10 +1,8 @@
 ﻿using ColossalFramework;
 using ColossalFramework.UI;
 using UnityEngine;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemeManager
 {
     public class UICloneBuildingModal : UIPanel
     {

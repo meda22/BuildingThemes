@@ -1,11 +1,10 @@
-﻿using ColossalFramework;
+﻿using System;
+using BuildingThemes.GUI.ThemeManager;
+using ColossalFramework;
 using ColossalFramework.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemePolicies
 {
     public class ThemePolicyTab
     {
@@ -105,7 +104,7 @@ namespace BuildingThemes.GUI
             showThemeManager.width = controls.width;
             showThemeManager.text = "Theme Manager";
 
-            showThemeManager.eventClick += (c, p) => GUI.UIThemeManager.instance.Toggle();
+            showThemeManager.eventClick += (c, p) => UIThemeManager.instance.Toggle();
 
             RefreshThemesContainer();
         }

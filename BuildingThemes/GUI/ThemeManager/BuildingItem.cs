@@ -1,11 +1,10 @@
-﻿using System.Text.RegularExpressions;
-using System.Globalization;
-
-using UnityEngine;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
 using ColossalFramework;
 using ColossalFramework.Globalization;
+using UnityEngine;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemeManager
 {
     public class BuildingItem
     {

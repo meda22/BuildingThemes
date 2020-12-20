@@ -1,9 +1,8 @@
-﻿using UnityEngine;
+﻿using BuildingThemes.GUI.ThemeManager;
 using ColossalFramework.UI;
+using UnityEngine;
 
-using System.Text;
-
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemePolicies
 {
     public class UIThemePolicyItem : UIPanel, IUIFastListRow
     {

@@ -1,7 +1,6 @@
-using ColossalFramework;
 using ColossalFramework.UI;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemePolicies
 {
     // This helper component updates the "Blacklist Mode" checkbox state in the policy panel every game tick.
     public class BlacklistModeCheckboxContainer : ToolsModifierControl

@@ -1,11 +1,8 @@
-﻿using ColossalFramework.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Timers;
+using ColossalFramework.UI;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemePolicies
 {
     // Enables the policy panel from the beginning
     public static class PolicyPanelEnabler

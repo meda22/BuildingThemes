@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using ColossalFramework.PlatformServices;
 using ColossalFramework.UI;
-using ColossalFramework.PlatformServices;
+using UnityEngine;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemeManager
 {
     public class UIBuildingItem : UIPanel, IUIFastListRow
     {

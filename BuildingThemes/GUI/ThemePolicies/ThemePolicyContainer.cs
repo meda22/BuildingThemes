@@ -1,7 +1,7 @@
 using ColossalFramework;
 using ColossalFramework.UI;
 
-namespace BuildingThemes.GUI
+namespace BuildingThemes.GUI.ThemePolicies
 {
     // This helper component updates the theme button/checkbox state in the policy panel every game tick.
     // It is based on the game's PolicyContainer component.
