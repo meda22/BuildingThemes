@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Globalization;
-
+using System.Linq;
 using UnityEngine;
 using ColossalFramework;
 using ColossalFramework.Globalization;
@@ -17,6 +17,21 @@ namespace BuildingThemes.GUI
 
         public BuildingInfo prefab;
         public Configuration.Building building;
+
+        public int buildingHeight
+        {
+            get
+            {
+                if (prefab.m_generatedInfo?.m_heights == null) return 0;
+                
+                if (prefab.m_generatedInfo.m_heights.Length != 0)
+                {
+                    return (int) prefab.m_generatedInfo.m_heights.Max();
+                }
+
+                return 0;
+            }
+        }
 
         public bool included
         {

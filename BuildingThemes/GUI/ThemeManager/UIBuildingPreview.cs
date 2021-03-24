@@ -149,7 +149,7 @@ namespace BuildingThemes.GUI
             // Size
             if (m_item.size != Vector2.zero)
             {
-                m_size.text = m_item.sizeAsString + " (" + Mathf.Ceil(m_item.prefab.m_collisionHeight) + " m)";
+                m_size.text = m_item.sizeAsString + " (" + m_item.buildingHeight + " m)";
                 m_size.textColor = new Color32(255, 0, 0, 255);
                 m_size.isVisible = true;
 
