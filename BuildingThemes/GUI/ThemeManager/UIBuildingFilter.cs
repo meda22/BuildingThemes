@@ -17,6 +17,29 @@ namespace BuildingThemes.GUI
         public UIDropDown sizeFilterX;
         public UIDropDown sizeFilterY;
         public UITextField nameFilter;
+        public UITextField minHeightFilter;
+        public UITextField maxHeightFilter;
+
+        public float maxBuildingHeight
+        {
+            get
+            {
+                float.TryParse(maxHeightFilter.text, out var maxHeight);
+                if (maxHeight == 0) maxHeight = float.MaxValue;
+                return maxHeight;
+            }
+        }
+        
+        public float minBuildingHeight
+        {
+            get
+            {
+                float.TryParse(minHeightFilter.text, out var minHeight);
+                if (minHeight == 0) minHeight = float.MinValue;
+                return minHeight;
+            }
+        }
+
 
         public bool IsZoneSelected(Category zone)
         {
@@ -262,6 +285,32 @@ namespace BuildingThemes.GUI
 
             nameFilter.eventTextChanged += (c, s) => eventFilteringChanged(this, 5);
             nameFilter.eventTextSubmitted += (c, s) => eventFilteringChanged(this, 5);
+            
+            // Height filter
+            UILabel heightLabel = AddUIComponent<UILabel>();
+            heightLabel.textScale = 0.8f;
+            heightLabel.padding = new RectOffset(0, 0, 8, 0);
+            heightLabel.relativePosition = new Vector3(width - 250, 40);
+            heightLabel.text = "Height min-max: ";
+            
+            minHeightFilter = UIUtils.CreateTextField(this);
+            minHeightFilter.width = 50;
+            minHeightFilter.height = 30;
+            minHeightFilter.padding = new RectOffset(6, 6, 6, 6);
+            minHeightFilter.relativePosition = new Vector3(width - minHeightFilter.width - 60, 40);
+            minHeightFilter.eventTextChanged += (c, s) => eventFilteringChanged(this, 6);
+            minHeightFilter.eventTextSubmitted += (c, s) => eventFilteringChanged(this, 6);
+            
+            maxHeightFilter = UIUtils.CreateTextField(this);
+            maxHeightFilter.width = 50;
+            maxHeightFilter.height = 30;
+            maxHeightFilter.padding = new RectOffset(6, 6, 6, 6);
+            maxHeightFilter.relativePosition = new Vector3(width - minHeightFilter.width, 40);
+            
+            maxHeightFilter.eventTextChanged += (c, s) => eventFilteringChanged(this, 7);
+            maxHeightFilter.eventTextSubmitted += (c, s) => eventFilteringChanged(this, 7);
+            
+            
         }
     }
 }
