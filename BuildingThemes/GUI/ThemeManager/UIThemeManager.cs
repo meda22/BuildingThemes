@@ -694,8 +694,8 @@ namespace BuildingThemes.GUI
                 if (!m_filter.buildingName.IsNullOrWhiteSpace() && !item.name.ToLower().Contains(m_filter.buildingName.ToLower())) continue;
                 
                 // height
-                if (!(m_filter.minBuildingHeight <= item.prefab.m_collisionHeight)) continue;
-                if (!(m_filter.maxBuildingHeight >= item.prefab.m_collisionHeight)) continue;
+                if (!(m_filter.minBuildingHeight <= item.buildingHeight)) continue;
+                if (!(m_filter.maxBuildingHeight >= item.buildingHeight)) continue;
 
                 filtered.Add(item);
             }

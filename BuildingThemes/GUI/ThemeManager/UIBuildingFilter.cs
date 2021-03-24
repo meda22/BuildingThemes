@@ -20,22 +20,22 @@ namespace BuildingThemes.GUI
         public UITextField minHeightFilter;
         public UITextField maxHeightFilter;
 
-        public float maxBuildingHeight
+        public int maxBuildingHeight
         {
             get
             {
-                float.TryParse(maxHeightFilter.text, out var maxHeight);
-                if (maxHeight == 0) maxHeight = float.MaxValue;
+                int.TryParse(maxHeightFilter.text, out var maxHeight);
+                if (maxHeight == 0) maxHeight = int.MaxValue;
                 return maxHeight;
             }
         }
         
-        public float minBuildingHeight
+        public int minBuildingHeight
         {
             get
             {
-                float.TryParse(minHeightFilter.text, out var minHeight);
-                if (minHeight == 0) minHeight = float.MinValue;
+                int.TryParse(minHeightFilter.text, out var minHeight);
+                if (minHeight == 0) minHeight = int.MinValue;
                 return minHeight;
             }
         }
