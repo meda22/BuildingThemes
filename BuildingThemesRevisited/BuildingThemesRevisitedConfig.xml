@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModConfiguration>
+    <UnlockPolicyPanel>true</UnlockPolicyPanel>
+    <DebugLogging>true</DebugLogging> <!-- TODO: change to false when implementation finished -->
+</ModConfiguration>
